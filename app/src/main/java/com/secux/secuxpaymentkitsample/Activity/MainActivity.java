@@ -8,9 +8,12 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+
 import com.secux.secuxpaymentkitsample.Dialog.PaymentDetailsDialog;
 import com.secux.secuxpaymentkitsample.Dialog.PromotionDetailsDialog;
 import com.secux.secuxpaymentkitsample.Dialog.RefillDetailsDialog;
+import com.secux.secuxpaymentkitsample.Model.Setting;
 import com.secux.secuxpaymentkitsample.R;
 import com.secux.secuxpaymentkitsample.Utility.SecuXQRCodeParser;
 import com.secuxtech.paymentkit.SecuXAccountManager;
@@ -21,8 +24,8 @@ import com.secuxtech.paymentkit.SecuXStoreInfo;
 
 public class MainActivity extends BaseActivity {
 
-    final private String mAccountName = "springtreesoperator";
-    final private String mAccountPwd = "springtrees";
+    private String mAccountName = "";
+    private String mAccountPwd = "";
 
     private SecuXPaymentManager mPaymentManager = new SecuXPaymentManager();
     private SecuXAccountManager mAccountManager = new SecuXAccountManager();
@@ -39,10 +42,12 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAccountName = Setting.getInstance().mMerchantAccountName;
+        mAccountPwd = Setting.getInstance().mMerchantAccountPwd;
+
         mAccountManager.setBaseServer("https://pmsweb-sandbox.secuxtech.com");
         checkBLESetting();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -93,7 +98,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    public void onClickScanQRCodeButton(View v){
+    public void onScanQRCodeButtonClick(View v){
         if (!checkBLESetting()) {
             return;
         }
@@ -158,6 +163,15 @@ public class MainActivity extends BaseActivity {
     }
 
     public void confirmOperation(SecuXStoreInfo storeInfo, String transID, String coin, String token, String amount, String nonce, String type){
+
+        if (!this.checkWifi()){
+            showAlert("No network!", "Please check the phone's network setting");
+            return;
+        }
+
+        if (!this.checkBLESetting()){
+            return;
+        }
 
         Pair<Integer, String> verifyRet = mPaymentManager.doActivity(this, this.mAccountName, storeInfo.mDevID,
                 coin, token, transID, amount, nonce, type);

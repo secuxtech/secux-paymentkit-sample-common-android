@@ -126,6 +126,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         Setting.getInstance().loadSettings(mContext);
 
         mEditTextAccount = findViewById(R.id.editText_login_account);

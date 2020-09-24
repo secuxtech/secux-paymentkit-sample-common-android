@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
+
 import com.secux.secuxpaymentkitsample.Activity.BaseActivity;
 import com.secux.secuxpaymentkitsample.R;
 

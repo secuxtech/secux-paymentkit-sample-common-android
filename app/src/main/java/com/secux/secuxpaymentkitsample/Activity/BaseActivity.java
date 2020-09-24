@@ -5,13 +5,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.secux.secuxpaymentkitsample.Dialog.CommonProgressDialog;
+import com.secux.secuxpaymentkitsample.R;
 
 import java.util.List;
 
@@ -22,6 +27,15 @@ public class BaseActivity  extends AppCompatActivity implements EasyPermissions.
     protected Context mContext = this;
 
     private CommonProgressDialog mProgressDlg = new CommonProgressDialog();
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.colorBlack));
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -40,6 +54,13 @@ public class BaseActivity  extends AppCompatActivity implements EasyPermissions.
         showAlert("No location permission!", "Bluetooth error! Operation abort.");
     }
 
+
+    protected boolean checkWifi(){
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     protected boolean checkBLESetting(){
 
